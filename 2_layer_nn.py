@@ -120,8 +120,8 @@ class Layer2NN(object):
         self.dw2 = A.T.dot(dY) + self.reg*self.w2
         self.db2 = dY.sum(axis=0)
         dA = dY.dot(self.w2.T)
-        self.dw1 = X.T.dot(dA*A*(1-dA)) + self.reg*self.w1
-        self.db1 = (dA*A*(1-A)).sum(axis=0)
+        self.dw1 = X.T.dot(dA*Layer2NN.derivative_of_relu(A)) + self.reg*self.w1
+        self.db1 = (dA*Layer2NN.derivative_of_relu(A)).sum(axis=0)
 
     def gradient_descent(self):
         self.w2 = self.w2 - self.learning_rate * self.dw2
