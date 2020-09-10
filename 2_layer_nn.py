@@ -130,7 +130,8 @@ class Layer2NN(object):
         self.b1 = self.b1 - self.learning_rate * self.db1
         self.learning_rate = self.learning_rate* self.learning_rate_decay
 
-    def evaluation(self, Y, T):
+    def evaluation(self, X, T):
+        Y, A = self.forward_propogation(X)
         Y = np.argmax(Y, axis=-1)
         T = np.argmax(T, axis=-1)
         return np.mean(Y==T)
@@ -142,13 +143,14 @@ class Layer2NN(object):
         for epoch in range(self.n_epoches):
             train_loss = 0
             train_acc = 0
+
             for i in range(n_batches):
                 X = self.Xtrain[i*self.batch_size:(i+1)*self.batch_size]
                 T = self.Ytrain[i*self.batch_size:(i+1)*self.batch_size]
 
                 Y, A = self.forward_propogation(X)
                 loss = self.Loss(Y, T)
-                acc = self.evaluation(Y, T)
+                acc = self.evaluation(X, T)
                 train_loss += loss
                 train_acc += acc
 
@@ -156,7 +158,11 @@ class Layer2NN(object):
                 self.gradient_descent()
 
                 Train_losses.append(train_loss)
-            print(" Epoch : {} , Loss : {} , Accuracy : {} ".format(epoch, round(train_loss,3), round(train_acc/n_batches,3)))
+
+            Y, A = self.forward_propogation(self.Xtest)
+            test_loss = self.Loss(Y, self.Ytest)
+            test_acc =  self.evaluation(self.Xtest, self.Ytest)
+            print(" Epoch : {} , Train Loss : {} , Train Accuracy : {} Test Loss : {} Test Accuracy : {}".format(epoch, round(train_loss,3), round(train_acc/n_batches,3), round(test_loss,3), round(test_acc,3)))
 
 
 if __name__ == "__main__":
