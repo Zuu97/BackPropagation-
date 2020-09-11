@@ -7,10 +7,11 @@ logging.getLogger('tensorflow').disabled = True
 
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 import tensorflow as tf
 # [b'batch_label', b'labels', b'data', b'filenames']
+
+np.random.seed(42)
 
 class Layer2NN(object):
     def __init__(self):
@@ -20,12 +21,12 @@ class Layer2NN(object):
         self.train_size = 10000
         self.test_size = 10000
         self.batch_size = 128
-        self.learning_rate = 1.4e-4
+        self.learning_rate = 5.4e-4
         self.std=1e-4
         self.reg=5e-5
         self.learning_rate_decay=0.999
         self.hidden_dim = 300
-        self.n_epoches = 30
+        self.n_epoches = 50
         self.Ytrain, self.Xtrain = self.load_train_data()
         self.Ytest , self.Xtest  = self.load_test_data()
         self.n_features = self.Xtrain.shape[1]
