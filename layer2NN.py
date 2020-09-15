@@ -11,19 +11,19 @@ from sklearn.utils import shuffle
 import tensorflow as tf
 # [b'batch_label', b'labels', b'data', b'filenames']
 
-np.random.seed(42)
+np.random.seed(1234)
 
 class Layer2NN(object):
     def __init__(self):
         self.train_batch_prefix = 'data_batch_'
         self.test_batch = 'test_batch'
         self.n_batches = 5
-        self.train_size = 10000
+        self.train_size = 50000
         self.test_size = 10000
-        self.batch_size = 128
-        self.learning_rate = 5.4e-4
-        self.std=1e-4
-        self.reg=5e-5
+        self.batch_size = 64
+        self.learning_rate = 1e-3
+        self.std=1e-6
+        self.reg=5e-6
         self.learning_rate_decay=0.999
         self.hidden_dim = 300
         self.n_epoches = 50
@@ -32,13 +32,16 @@ class Layer2NN(object):
         self.n_features = self.Xtrain.shape[1]
         self.n_classes = len(set(self.Ytrain))
 
-        self.Ytrain =  tf.keras.utils.to_categorical(self.Ytrain, num_classes=self.n_classes)
-        self.Ytest  = tf.keras.utils.to_categorical(self.Ytest, num_classes=self.n_classes)
-
         print(" Xtrain Shape : {} ".format(self.Xtrain.shape))
         print(" Ytrain Shape : {} ".format(self.Ytrain.shape))
         print(" Xtest  Shape : {} ".format(self.Xtest.shape))
         print(" Ytest  Shape : {} \n".format(self.Ytest.shape))
+
+        print(" Batch size : {}".format(self.batch_size))
+        print(" learning rate : {}".format(self.learning_rate))
+
+        self.Ytrain =  tf.keras.utils.to_categorical(self.Ytrain, num_classes=self.n_classes)
+        self.Ytest  = tf.keras.utils.to_categorical(self.Ytest, num_classes=self.n_classes)
 
     def initialize_weights(self):
         self.w1 = self.std*np.random.randn(self.n_features, self.hidden_dim)
@@ -114,7 +117,7 @@ class Layer2NN(object):
         return Y, A
 
     def Loss(self, Y, T):
-        return 1./self.batch_size*np.square(Y - T).sum() + self.reg * (np.sum(self.w2 * self.w2) + np.sum( self.w1 * self.w1 ))
+        return (1./self.batch_size)*np.square(Y - T).sum() + self.reg * (np.sum(self.w2 * self.w2) + np.sum( self.w1 * self.w1 ))
 
     def backward_propogation(self, X, Y, A, T):
         dY = 1./self.batch_size*2.0*(Y - T)
