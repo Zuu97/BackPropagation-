@@ -45,6 +45,10 @@ class AutoGrad(Layer2NN):
     def train_autoGrad(self):
         n_batches = len(self.Ytrain) // self.batch_size
         Train_losses = []
+        Test_losses = []
+
+        Train_Accuracy = []
+        Test_Accuracy = []
         for epoch in range(self.n_epoches):
             train_loss = 0
             train_acc = 0
@@ -66,11 +70,15 @@ class AutoGrad(Layer2NN):
                 acc = self.evaluation(X, T)
                 train_loss += loss.numpy()
                 train_acc += acc
-                Train_losses.append(train_loss)
 
             Y = self.forward_propogation(self.Xtest)
             test_loss = self.Loss_tf(Y, self.Ytest, len(self.Ytest)).numpy()
             test_acc =  self.evaluation(self.Xtest, self.Ytest)
+
+            Train_losses.append(train_loss)
+            Test_losses.append(test_loss)
+            Test_Accuracy.append(train_loss)
+            Test_losses.append(test_loss
             print(" Epoch : {} , Train Loss : {} , Train Accuracy : {} Test Loss : {} Test Accuracy : {}".format(epoch, round(train_loss,5), round(train_acc/n_batches,3), round(test_loss,5), round(test_acc,3)))
 
     def evaluation(self, X, T):
